@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Quantum Spin Heroes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a0c12 0%, #0f1219 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            padding: 1rem;
+        }
+
+        .card {
+            max-width: 550px;
+            width: 100%;
+            background: rgba(18, 22, 35, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 3rem;
+            border: 1px solid rgba(78, 205, 255, 0.2);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 255, 0.1) inset;
+            overflow: hidden;
+            padding: 1.8rem 1.5rem 2rem;
+            transition: all 0.2s;
+        }
+
+        .hero-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
+            padding-bottom: 0.75rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #ffffff, #4ecaff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .by {
+            font-size: 0.75rem;
+            color: #8e9aaf;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: #0b0e17cc;
+            border-radius: 2rem;
+            padding: 0.7rem 1.2rem;
+            margin: 1rem 0 1.4rem;
+            border: 1px solid #2c3142;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .stat-label {
+            color: #7f8c9a;
+            font-size: 0.8rem;
+        }
+
+        .stat-value {
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            background: #00000055;
+            padding: 0.2rem 0.7rem;
+            border-radius: 2rem;
+            font-family: monospace;
+        }
+
+        .nft-badge {
+            background: #1e2a3a;
+            border-radius: 1rem;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            color: #85e0ff;
+        }
+
+        .spin-area {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .wheel-placeholder {
+            background: radial-gradient(circle, #131a2a, #05070c);
+            border-radius: 50%;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #2dffb0;
+            box-shadow: 0 0 15px #00ffcc33;
+            transition: all 0.1s ease;
+        }
+
+        .prize-preview {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(145deg, gold, orange);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        button {
+            background: linear-gradient(95deg, #2b2f45, #1b1f32);
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 60px;
+            color: white;
+            width: 80%;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 5px 0 #0c0f18;
+            font-family: inherit;
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #0c0f18;
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            transform: translateY(0);
+            cursor: not-allowed;
+        }
+
+        .rewards-panel {
+            margin: 1.5rem 0 1rem;
+            background: #0c0f1aa0;
+            border-radius: 2rem;
+            padding: 1rem;
+        }
+
+        .rarity-list {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .rarity {
+            flex: 1;
+            text-align: center;
+            background: #1e1f2c;
+            border-radius: 2rem;
+            padding: 0.4rem 0;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .legendary { color: #ffd966; text-shadow: 0 0 2px gold; }
+        .epic { color: #c77dff; }
+        .rare { color: #5dade2; }
+        .common { color: #aab7c4; }
+
+        .streak {
+            background: #161c2c;
+            border-radius: 2rem;
+            text-align: center;
+            padding: 0.7rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .reset-note {
+            font-size: 0.7rem;
+            color: #6f7c91;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .last-reward {
+            background: #00000055;
+            border-radius: 1rem;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="hero-header">
+        <h1>⚛️ QUANTUM SPIN HEROES</h1>
+        <span class="by">by xannrz</span>
+    </div>
+
+    <div class="stats">
+        <div class="stat">🎴 <span class="stat-label">NFTs</span> <span class="stat-value" id="nftCount">115</span></div>
+        <div class="stat">🔥 <span class="stat-label">streak bonus</span> <span class="stat-value" id="streakBonus">5</span></div>
+        <div class="stat">🟣 <span class="stat-label">wallet</span> <span class="stat-value" id="walletShort">0x66d8...1ebe</span></div>
+        <div class="stat">⛓️ Base &nbsp;<span class="stat-value" id="usdcBalance">0.17 USDC</span></div>
+    </div>
+
+    <div class="spin-area">
+        <div class="wheel-placeholder" id="wheelVisual">
+            <div class="prize-preview" id="spinResultPreview">✨ SPIN ✨</div>
+            <div style="font-size: 0.7rem; margin-top: 8px;">click to win</div>
+        </div>
+        <button id="spinBtn">🎰 SPIN & WIN 🎰</button>
+    </div>
+
+    <div class="rewards-panel">
+        <div class="rarity-list">
+            <div class="rarity legendary">🏆 LEGENDARY</div>
+            <div class="rarity epic">✨ EPIC</div>
+            <div class="rarity rare">💎 RARE</div>
+            <div class="rarity common">⚙️ COMMON</div>
+        </div>
+    </div>
+
+    <div class="streak" id="streakDisplay">⭐ 5 streak active — next spin +5% bonus</div>
+    <div class="last-reward" id="lastRewardMsg">Last spin: —</div>
+    <div class="reset-note" id="resetTimer">Daily Spin resets at midnight UTC</div>
+</div>
+
+<script>
+    // ------ BACKEND SIMULATION (localStorage + logic) ------
+    const STORAGE_KEY = "quantum_spin_heroes";
+    let gameData = {
+        streak: 5,           // streak bonus count
+        lastSpinDate: null,  // yyyy-mm-dd
+        totalSpins: 0,
+        lastReward: null
+    };
+
+    function loadGame() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if(saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                gameData.streak = parsed.streak ?? 5;
+                gameData.lastSpinDate = parsed.lastSpinDate;
+                gameData.totalSpins = parsed.totalSpins ?? 0;
+                gameData.lastReward = parsed.lastReward;
+            } catch(e) {}
+        }
+        checkDailyReset();
+        updateUI();
+    }
+
+    function checkDailyReset() {
+        const today = new Date().toISOString().split('T')[0];
+        if(gameData.lastSpinDate !== today) {
+            // reset streak hanya jika tidak spin hari ini?
+            // Aturan: streak berlanjut hanya jika spin tiap hari.
+            // Jika terlewat sehari => streak reset ke 1. Tapi bonus streak awal 5.
+            if(gameData.lastSpinDate && gameData.lastSpinDate !== today) {
+                // missed a day
+                gameData.streak = 1;
+            } else if(!gameData.lastSpinDate) {
+                gameData.streak = 5; // initial
+            }
+            // Jangan reset totalSpins
+            saveGame();
+        }
+        updateTimer();
+    }
+
+    function saveGame() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            streak: gameData.streak,
+            lastSpinDate: gameData.lastSpinDate,
+            totalSpins: gameData.totalSpins,
+            lastReward: gameData.lastReward
+        }));
+    }
+
+    function updateUI() {
+        document.getElementById("streakBonus").innerText = gameData.streak;
+        document.getElementById("streakDisplay").innerHTML = `⭐ ${gameData.streak} streak active — next spin +${Math.min(20, gameData.streak * 2)}% bonus chance for epic+`;
+        if(gameData.lastReward) {
+            document.getElementById("lastRewardMsg").innerHTML = `🏆 Last spin: ${gameData.lastReward}`;
+        }
+        // wallet dan nft tetap
+        document.getElementById("nftCount").innerText = "115";
+        document.getElementById("walletShort").innerText = "0x66d8...1ebe";
+        document.getElementById("usdcBalance").innerText = "0.17 USDC";
+    }
+
+    // reward rarity & logic
+    const rarities = [
+        { name: "LEGENDARY", weight: 5,  color: "gold", emoji: "🏆" },
+        { name: "EPIC",      weight: 15, color: "#c77dff", emoji: "✨" },
+        { name: "RARE",      weight: 30, color: "#5dade2", emoji: "💎" },
+        { name: "COMMON",    weight: 50, color: "#aab7c4", emoji: "⚙️" }
+    ];
+
+    function getRandomRarity(streakBonusMult = 1) {
+        // streak meningkatkan chance Legendary & Epic
+        let weights = [...rarities.map(r => r.weight)];
+        // bonus: setiap streak +2% epic/leg (max 20% shift)
+        let bonusPercent = Math.min(20, gameData.streak * 2);
+        if(bonusPercent > 0) {
+            // kurangi common, tambah ke epic & legendary
+            let reduceCommon = Math.min(weights[3], bonusPercent);
+            weights[3] -= reduceCommon;
+            // bagi ke epic & legendary (70% leg, 30% epic)
+            let addLegend = Math.floor(reduceCommon * 0.7);
+            let addEpic = reduceCommon - addLegend;
+            weights[0] += addLegend;
+            weights[1] += addEpic;
+        }
+        // total weight
+        let total = weights.reduce((a,b)=>a+b,0);
+        let rand = Math.random() * total;
+        let cumulative = 0;
+        for(let i=0; i<rarities.length; i++) {
+            cumulative += weights[i];
+            if(rand < cumulative) return rarities[i];
+        }
+        return rarities[3];
+    }
+
+    function spinWheel() {
+        // cek apakah sudah spin hari ini
+        const today = new Date().toISOString().split('T')[0];
+        if(gameData.lastSpinDate === today) {
+            alert("⏳ You've already spun today! Come back tomorrow at midnight UTC.");
+            return false;
+        }
+
+        // roll reward
+        const reward = getRandomRarity();
+        gameData.lastReward = `${reward.emoji} ${reward.name}`;
+        gameData.totalSpins++;
+        gameData.lastSpinDate = today;
+        
+        // perbarui streak (harian)
+        gameData.streak = (gameData.streak || 0) + 1;
+        
+        // simpan
+        saveGame();
+        
+        // animasi visual di wheel
+        const previewDiv = document.getElementById("spinResultPreview");
+        previewDiv.innerHTML = `${reward.emoji} ${reward.name} +${reward.name === "LEGENDARY" ? "5 USDC" : (reward.name === "EPIC" ? "2.5 USDC" : "reward")}`;
+        
+        // bonus USDC hanya simulasi
+        let currentUsdc = parseFloat(document.getElementById("usdcBalance").innerText);
+        if(reward.name === "LEGENDARY") currentUsdc += 5.0;
+        else if(reward.name === "EPIC") currentUsdc += 2.5;
+        else if(reward.name === "RARE") currentUsdc += 0.5;
+        else currentUsdc += 0.1;
+        document.getElementById("usdcBalance").innerText = currentUsdc.toFixed(2) + " USDC";
+        
+        updateUI();
+        // animasi tombol
+        const spinBtn = document.getElementById("spinBtn");
+        spinBtn.style.transform = "scale(0.96)";
+        setTimeout(()=> spinBtn.style.transform = "", 150);
+        
+        document.getElementById("lastRewardMsg").innerHTML = `🎉 JUST WON: ${reward.emoji} ${reward.name} 🎉`;
+        setTimeout(() => {
+            if(gameData.lastReward) document.getElementById("lastRewardMsg").innerHTML = `🏆 Last spin: ${gameData.lastReward}`;
+        }, 3000);
+        return true;
+    }
+
+    let countdownInterval;
+    function updateTimer() {
+        if(countdownInterval) clearInterval(countdownInterval);
+        function refreshTimer() {
+            const now = new Date();
+            const utcMidnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()+1, 0,0,0));
+            const diff = utcMidnight - now;
+            if(diff <= 0) {
+                document.getElementById("resetTimer").innerHTML = "✨ Reset available! Spin now ✨";
+                checkDailyReset();
+                return;
+            }
+            const hours = Math.floor(diff / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            const secs = Math.floor((diff % 60000) / 1000);
+            document.getElementById("resetTimer").innerHTML = `🔄 Daily reset in ${hours}h ${minutes}m ${secs}s`;
+        }
+        refreshTimer();
+        countdownInterval = setInterval(refreshTimer, 1000);
+    }
+
+    // event spin
+    document.getElementById("spinBtn").addEventListener("click", () => {
+        spinWheel();
+    });
+
+    loadGame();
+    // initial visual
+    document.getElementById("spinResultPreview").innerHTML = "⚛️ SPIN ⚛️";
+</script>
+</body>
+</html>
